@@ -30,13 +30,14 @@ for ind in df.index:
     article = Article(df['link'][ind], config=config)
     try:
         article.download()
+        article.parse()
+        article.nlp()
+        sentence = article.text.lower()
+        match_pattern = re.findall(r'\b[a-z]{3,15}\b', sentence) # из текста берем только слова
+        text.extend(match_pattern)
     except Exception: # некотые ссылки возвращают 403, их пропускаем
         continue
-    article.parse()
-    article.nlp()
-    sentence = article.text.lower()
-    match_pattern = re.findall(r'\b[a-z]{3,15}\b', sentence) # из текста берем только слова
-    text.extend(match_pattern)
+    
 
 # переводим получившийся список слов в строку
 text = ' '.join(text)
